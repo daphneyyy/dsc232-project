@@ -40,13 +40,11 @@ Visualizations include:
 
 ## Preprocess Steps
 
-- Dropped inconsistent/extra fields: `airport_fee`, `ehail_fee`, and `trip_type`
+- Dropped extra fields for union dataframes: `airport_fee`, `ehail_fee`, and `trip_type`
   - Check session **"Combine Yellow Taxi and Green Taxi Data"** of notebook
-- Unified column names:
-  - `tpep_pickup_datetime` / `lpep_pickup_datetime` → `pickup_datetime`
-  - `tpep_dropoff_datetime` / `lpep_dropoff_datetime` → `dropoff_datetime`
+- Since yellow taxi data has extra column `airport_fee`, and green taxi data has extra columns `trip_type` and `ehail_fee`, we will drop these columns before analysis. Additionally, to unify the schema, we will rename `tpep_pickup_datetime` in yellow data and `lpep_pickup_datetime` in green to `pickup_datetime`. Similarly, `tpep_dropoff_datetime` and `lpep_dropoff_datetime` will be renamed to `dropoff_datetime`.
   - Check session **"Combine Yellow Taxi and Green Taxi Data"** of notebook
-- Removed outliers using approximate quantiles (IQR method)
-    - Check sessions **"Check outliers of columns"**, **"Remove outliers"** of notebook
+- Removed outliers using approximate quantiles (IQR method). Additionally, in reality, there shouldn't be negative `passenger_count` and negative `trip_distance`, so, we need to remove them.
+    - Check sessions **"Check outliers of columns"** and **"Remove outliers"** of notebook
 - Filled missing `passenger_count` using mode per (pickup_day, PULocationID) group
     - Check session **"Check for null values"** of notebook
