@@ -37,6 +37,7 @@ Visualizations include:
 - Bar plots for `passenger_count`
 - Bar plots of pickup locations and drop-off zones
 - Scatter plots of pickup vs. drop-off zones
+- Bar plots showing the count of drop-off locations by day of the week
 
 ## Preprocess Steps
 
