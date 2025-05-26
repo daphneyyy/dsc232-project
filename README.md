@@ -2,6 +2,35 @@
 
 The project aims to predict the drop-off location zone of NYC taxi trips using infomation avalible at the pickup time. The dataset includes records from 2014 to 2024 of NYC green and yellow taxi trips. The project is implemented in PySpark.
 
+## Environment Setup
+
+This project was developed and executed using the [UCSD Expanse Portal](https://portal.expanse.sdsc.edu), running Spark notebooks through the Singularity container environment.
+
+**Platform**: SDSC Expanse (https://portal.expanse.sdsc.edu)  
+**Singularity Image**: `~/esolares/spark_py_latest_jupyter_dsc232r.sif`  
+**Environment Modules Loaded**: `singularitypro`  
+**Working Directory**: `home`  
+**Notebook Type**: JupyterLab  
+**Account**: `TG-CIS240277`  
+**Partition**: `shared`
+
+### SLURM Resource Settings Used:
+- **Cores**: 10
+- **Memory per node**: 16 GB
+- **Time limit**: 240 minutes
+
+### Spark Session Example:
+If you manually created a Spark session in your notebook, the config might look like:
+```python
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder \
+    .config("spark.driver.memory", "16g") \
+    .config("spark.executor.memory", "16g") \
+    .config("spark.executor.instances", 9) \
+    .getOrCreate()
+```
+
 ## Dataset
 
 - **Source**: [Kaggle - NYC Green Yellow Taxi Trip Records](https://www.kaggle.com/datasets/madalagopichand/nyc-green-yellow-taxi-trip-records)
