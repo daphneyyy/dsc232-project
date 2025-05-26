@@ -2,6 +2,35 @@
 
 The project aims to predict the drop-off location zone of NYC taxi trips using infomation avalible at the pickup time. The dataset includes records from 2014 to 2024 of NYC green and yellow taxi trips. The project is implemented in PySpark.
 
+## Environment Setup
+
+This project was developed and executed using the [UCSD Expanse Portal](https://portal.expanse.sdsc.edu), running Spark notebooks through the Singularity container environment.
+
+**Platform**: SDSC Expanse (https://portal.expanse.sdsc.edu)  
+**Singularity Image**: `~/esolares/spark_py_latest_jupyter_dsc232r.sif`  
+**Environment Modules Loaded**: `singularitypro`  
+**Working Directory**: `home`  
+**Notebook Type**: JupyterLab  
+**Account**: `TG-CIS240277`  
+**Partition**: `shared`
+
+### SLURM Resource Settings Used:
+- **Cores**: 10
+- **Memory per node**: 16 GB
+- **Time limit**: 240 minutes
+
+### Spark Session Example:
+If you manually created a Spark session in your notebook, the config might look like:
+```python
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder \
+    .config("spark.driver.memory", "16g") \
+    .config("spark.executor.memory", "16g") \
+    .config("spark.executor.instances", 9) \
+    .getOrCreate()
+```
+
 ## Dataset
 
 - **Source**: [Kaggle - NYC Green Yellow Taxi Trip Records](https://www.kaggle.com/datasets/madalagopichand/nyc-green-yellow-taxi-trip-records)
@@ -49,3 +78,31 @@ Visualizations include:
     - Check sessions **"Check outliers of columns"** and **"Remove outliers"** of notebook
 - Filled missing `passenger_count` using mode per (pickup_day, PULocationID) group
     - Check session **"Check for null values"** of notebook
+
+
+## Models
+### Baseline Model - Random Forest Classifier
+
+Selected `RandomForestClassifier` as the baseline model to predict drop-off zone (`DOLocationID`) using only features available at the pickup time.
+
+#### Selected Features
+- Categorical: `VendorID`, `RatecodeID`, `store_and_fwd_flag`, `PULocationID`, `payment_type`, `taxi_color`
+- Numerical: `passenger_count`, `pickup_day_num`, `pickup_hour` (derived from `pickup_datetime`)
+
+#### Model Configuration
+- Pipeline: Used `StringIndexer` and `OneOneHotEncoder` to encode categorical features and assembled them with numeric inputs to train a Random Forest classifier.
+- Model: `RandomForestClassifier` with parameters `numTrees=10`, `maxDepth=10`, `subsamplingRate=0.1` and `featureSubsetStrategy="sqrt"`.
+
+#### Performance
+
+| Metric   | Train Set | Test Set |
+|----------|-----------|----------|
+| Accuracy |   XX%     |   XX%    |
+
+#### Evaluation
+- The model appears to be ___ based on training and test accuracy.
+- I plan to explore `XGBoost` and `GBTClassifier` as they can better capture non-linear patterns and typically perform well on structured data.
+
+#### Conclusion
+
+The first model, using a Random Forest with limited depth and subsampling, provides a fast and scalable baseline on large data. However, its performance is constrained by model simplicity and limited feature interactions. To improve, we plan to engineer richer features, tune hyperparameters, and experiment with more expressive models like `XGBoost` or `GBTClassifier`.
