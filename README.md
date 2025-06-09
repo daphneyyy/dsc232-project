@@ -106,3 +106,4 @@ Selected `RandomForestClassifier` as the baseline model to predict drop-off zone
 #### Conclusion
 
 The first model, using a Random Forest with limited depth and subsampling, provides a fast and scalable baseline on large data. However, its performance is constrained by model simplicity and limited feature interactions. To improve, we plan to engineer richer features, tune hyperparameters, and experiment with more expressive models like `XGBoost` or `GBTClassifier`.
+
