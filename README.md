@@ -1,6 +1,9 @@
 # DSC 232 Project - NYC Taxi Trip Destination Prediction
 
-The project aims to predict the drop-off location zone of NYC taxi trips using infomation avalible at the pickup time. The dataset includes records from 2014 to 2024 of NYC green and yellow taxi trips. The project is implemented in PySpark.
+## Introduction
+This project aims to predict the **drop-off location zone** of NYC taxi trips using only the information available at **pickup time**. Predicting a passenger’s destination early in the trip has significant applications in optimizing dispatch systems, anticipating traffic bottlenecks, improving rider safety, and enabling more intelligent pricing or matching systems in urban transport. Our dataset includes records from **2014 to 2024** of NYC green and yellow taxi trips.
+
+The predictive model is developed in **PySpark** and deployed on **UCSD’s SDSC Expanse cluster** due to the large data volume (~100M+ records). The target variable is **DOLocationID** and the model is trained using only features that would be known at pickup.
 
 ## Environment Setup
 
@@ -52,7 +55,8 @@ spark = SparkSession.builder \
   - `ehail_fee`: Fee for e-hail trips (if applicable)
   - `trip_type`: 1 = Street-hail, 2 = Dispatch
 
-## Data Exploration
+## Methods
+### Data Exploration
 
 Data distributions and statistics are generated for key features:
 - Total observations
@@ -62,13 +66,14 @@ Data distributions and statistics are generated for key features:
   - `trip_distance`
   - `PULocationID` & `DOLocationID`
 
+
 Visualizations include:
 - Bar plots for `passenger_count`
 - Bar plots of pickup locations and drop-off zones
 - Scatter plots of pickup vs. drop-off zones
 - Bar plots showing the count of drop-off locations by day of the week
 
-## Preprocess Steps
+### Preprocess Steps
 
 - Dropped extra fields for union dataframes: `airport_fee`, `ehail_fee`, and `trip_type`
   - Check session **"Combine Yellow Taxi and Green Taxi Data"** of notebook
@@ -80,29 +85,48 @@ Visualizations include:
     - Check session **"Check for null values"** of notebook
 
 
-## Models
-### Baseline Model - Random Forest Classifier
+### Models
+#### Baseline Model - Random Forest Classifier
 
 Selected `RandomForestClassifier` as the baseline model to predict drop-off zone (`DOLocationID`) using only features available at the pickup time.
 
-#### Selected Features
+##### Selected Features
 - Categorical: `VendorID`, `RatecodeID`, `store_and_fwd_flag`, `PULocationID`, `payment_type`, `taxi_color`
 - Numerical: `passenger_count`, `pickup_day_num`, `pickup_hour` (derived from `pickup_datetime`)
 
-#### Model Configuration
+##### Model Configuration
 - Pipeline: Used `StringIndexer` and `OneOneHotEncoder` to encode categorical features and assembled them with numeric inputs to train a Random Forest classifier.
 - Model: `RandomForestClassifier` with parameters `numTrees=10`, `maxDepth=10`, `subsamplingRate=0.1` and `featureSubsetStrategy="sqrt"`.
 
-#### Performance
+#### Second Model - XGBoost Classifier
+
+## Results
+
+### Model 1: Random Forest Classifier
 
 | Metric   | Train Set | Test Set |
 |----------|-----------|----------|
 | Accuracy |   XX%     |   XX%    |
 
-#### Evaluation
+### Model 2: XGBoost Classifier
+Not Available
+
+## Discussion
+
+### Model 1: Random Forest Classifier
 - The model appears to be ___ based on training and test accuracy.
 - I plan to explore `XGBoost` and `GBTClassifier` as they can better capture non-linear patterns and typically perform well on structured data.
 
-#### Conclusion
+### Model 2: XGBoost Classifier
 
+## Conclusion
+
+### Model 1: Random Forest Classifier
 The first model, using a Random Forest with limited depth and subsampling, provides a fast and scalable baseline on large data. However, its performance is constrained by model simplicity and limited feature interactions. To improve, we plan to engineer richer features, tune hyperparameters, and experiment with more expressive models like `XGBoost` or `GBTClassifier`.
+
+
+## Collaboration
+
+- **Name**: Xuewen Yang
+- **Title**: Independent Contributor
+- **Contribution**: I worked solely on the project, including data exploration, preprocessing, model development, and evaluation. This project reflects my individual effort and responsibility as an independent worker.
