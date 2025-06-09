@@ -5,6 +5,10 @@ This project aims to predict the **drop-off location zone** of NYC taxi trips us
 
 The predictive model is developed in **PySpark** and deployed on **UCSD’s SDSC Expanse cluster** due to the large data volume (~100M+ records). The target variable is **DOLocationID** and the model is trained using only features that would be known at pickup.
 
+## Figures
+<!-- insert photo -->
+![NYC Taxi Trip Destination Prediction](https://raw.githubusercontent.com/UCSD-DSC232/dsc232-project-nyc-taxi-trip-destination-prediction/main/images/nyc_taxi_trip_prediction.png)
+
 ## Environment Setup
 
 This project was developed and executed using the [UCSD Expanse Portal](https://portal.expanse.sdsc.edu), running Spark notebooks through the Singularity container environment.
@@ -86,7 +90,7 @@ Visualizations include:
 
 
 ### Models
-#### Baseline Model - Random Forest Classifier
+#### Baseline Model - [Random Forest Classifier](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.ml.classification.RandomForestClassifier.html)
 
 Selected `RandomForestClassifier` as the baseline model to predict drop-off zone (`DOLocationID`) using only features available at the pickup time.
 
@@ -96,34 +100,69 @@ Selected `RandomForestClassifier` as the baseline model to predict drop-off zone
 
 ##### Model Configuration
 - Pipeline: Used `StringIndexer` and `OneOneHotEncoder` to encode categorical features and assembled them with numeric inputs to train a Random Forest classifier.
-- Model: `RandomForestClassifier` with parameters `numTrees=10`, `maxDepth=10`, `subsamplingRate=0.1` and `featureSubsetStrategy="sqrt"`.
+- Model: 
 
-#### Second Model - XGBoost Classifier
+  ```python
+  rfclf = RandomForestClassifier(
+      labelCol="label",
+      featuresCol="features",
+      numTrees=10,
+      maxDepth=10,
+      subsamplingRate=0.1,
+      featureSubsetStrategy="sqrt"
+  )
+  ```
+
+#### Second Model - [Gradient-Boosted Trees (GBTs) Classifier](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.ml.classification.GBTClassifier.html)
+
+##### Selected Features
+Same as the Random Forest model, using categorical and numerical features derived from the pickup time.
+
+##### Model Configuration
+- Pipeline: Similar to the Random Forest model, using `StringIndexer` and `OneHotEncoder` for categorical features.
+- Model:
+  ```python
+  gbtclf = GBTClassifier(
+    labelCol="label",
+    featuresCol="features",
+    maxIter=50,
+    maxDepth=8,
+    stepSize=0.1,
+    subsamplingRate=0.8,
+    seed=42
+  )
+  ```
 
 ## Results
 
 ### Model 1: Random Forest Classifier
 
-| Metric   | Train Set | Test Set |
-|----------|-----------|----------|
-| Accuracy |   XX%     |   XX%    |
+Not Trained due to extended SDSC server issues affecting job submission and execution.
 
-### Model 2: XGBoost Classifier
-Not Available
+### Model 2: GBTClassifier
+Not Trained due to extended SDSC server issues affecting job submission and execution.
 
 ## Discussion
 
-### Model 1: Random Forest Classifier
-- The model appears to be ___ based on training and test accuracy.
-- I plan to explore `XGBoost` and `GBTClassifier` as they can better capture non-linear patterns and typically perform well on structured data.
+### Data Exploration
 
-### Model 2: XGBoost Classifier
+The initial data exploration helped us understand the statistics and data distributions of key features. We can identify outliers that deviated significantly from the majority of data points, such as extreme trip distances or unusual passenger counts. These outliers could potentially bias model training and were therefore handled during preprocessing. Time-based fields like pickup hour and day were added to help models detect temporal trends.
+
+### Preprocessing
+
+Preprocessing steps are the most significant part of the project. In this section, I cleaned the data by removing outliers, filling missing values, and unifying the schema between yellow and green taxi datasets. The preprocessing steps ensure that the data is in a suitable format for modeling. 
+
+### Model 1: Random Forest Classifier
+
+Intended as a baseline model due to its scalability and simplicity. It is capable of handling high-dimensional categorical data without normalization. However, model training failed due to SDSC storage error: `java.io.IOException: No space left on device`.
+
+### Model 2: GBTClassifier
+
+The second model is Gradient-Boosted Trees (GBT) Classifier, which is more powerful than Random Forests classifier on capturing complex relationships in the data. The model is intended to improve prediction accuracy but fail to execute due to continued resource issues.
 
 ## Conclusion
 
-### Model 1: Random Forest Classifier
-The first model, using a Random Forest with limited depth and subsampling, provides a fast and scalable baseline on large data. However, its performance is constrained by model simplicity and limited feature interactions. To improve, we plan to engineer richer features, tune hyperparameters, and experiment with more expressive models like `XGBoost` or `GBTClassifier`.
-
+While I was unable to train both models due to technical issue, I completed an end-to-end pipeline including data cleaning, feature engineering, and full modeling configurations. With stable computational resources, both models are expected to perform well, with GBT offering potentially higher predictive accuracy. This work highlights the value of early-trip data in powering intelligent transportation solutions.
 
 ## Collaboration
 
