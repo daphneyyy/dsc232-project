@@ -7,7 +7,7 @@ The predictive model is developed in **PySpark** and deployed on **UCSD’s SDSC
 
 ## Figures
 <!-- insert photo -->
-![NYC Taxi Trip Destination Prediction](https://raw.githubusercontent.com/UCSD-DSC232/dsc232-project-nyc-taxi-trip-destination-prediction/main/images/nyc_taxi_trip_prediction.png)
+![Taxi](Taxicabs_of_New_York_City.jpg)
 
 ## Environment Setup
 
